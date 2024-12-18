@@ -14,9 +14,9 @@ module alchitry_top (
     sig rst                 // reset signal
     const CLOCK_DIVIDER = $is_sim() ? 11 : 26
     const CLK_FREQ = $is_sim() ? 1000 : 100000000
-    const SEG_REFRESH = $is_sim() ? 3 : 10
+    const SEG_REFRESH = $is_sim() ? 2 : 10
     const SEG_SELECTOR = {
-        4hE, 4hD, 4hB
+        4hE, 4hD, 4hB, 4h7
     }
     
     .clk(clk) {
@@ -31,9 +31,10 @@ module alchitry_top (
         random_number_generator generator(.slow_clk(slow_clk.value), .refresh(io_button_0.out))
     }
     
-    bin_to_dec bin_to_dec(#DIGITS(3), .value(generator.out), #LEADING_ZEROS(1))
+    bin_to_dec bin_to_dec(#DIGITS(4), .value(generator.out), #LEADING_ZEROS(1))
+    
     // match encoder[0].char to bin_to_dec.digits[0], and so on
-    seven_segment_encoder encoder[3](.char($reverse(bin_to_dec.digits)))
+    seven_segment_encoder encoder[4](.char($reverse(bin_to_dec.digits)))
     
     always {
         reset_cond.in = ~rst_n  // input raw inverted reset signal
@@ -46,12 +47,7 @@ module alchitry_top (
         seg_multiplex.d = seg_multiplex.q
         
         if(seg_clk_edge.out){
-            if (seg_multiplex.q[1] & ~seg_multiplex.q[0]){
-                seg_multiplex.d = 0
-            }
-            else{
                 seg_multiplex.d = seg_multiplex.q + 1
-            }
         }
        
         io_led[2:1] = 2x{{8h00}}
