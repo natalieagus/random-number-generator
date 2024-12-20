@@ -15,9 +15,6 @@ module alchitry_top (
     const CLOCK_DIVIDER = $is_sim() ? 11 : 26
     const CLK_FREQ = $is_sim() ? 1000 : 100000000
     const SEG_REFRESH = $is_sim() ? 2 : 10
-    const SEG_SELECTOR = {
-        4hE, 4hD, 4hB, 4h7
-    }
     
     .clk(clk) {
         reset_conditioner reset_cond
@@ -31,6 +28,7 @@ module alchitry_top (
         random_number_generator generator(.slow_clk(slow_clk.value), .refresh(io_button_0.out))
     }
     
+    decoder seg_selector(#WIDTH(2), .in(seg_multiplex.q))
     bin_to_dec bin_to_dec(#DIGITS(4), .value(generator.out), #LEADING_ZEROS(1))
     
     // match encoder[0].char to bin_to_dec.digits[0], and so on
@@ -53,6 +51,6 @@ module alchitry_top (
         io_led[2:1] = 2x{{8h00}}
         io_led[0] = generator.out
         io_segment = ~encoder.segs[seg_multiplex.q]
-        io_select = SEG_SELECTOR[seg_multiplex.q]
+        io_select = ~seg_selector.out
     }
 }

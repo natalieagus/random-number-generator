@@ -64,6 +64,12 @@
                     "type": "Component",
                     "path": "Miscellaneous/bin_to_dec.luc"
                 }
+            },
+            {
+                "file": {
+                    "type": "Component",
+                    "path": "Miscellaneous/decoder.luc"
+                }
             }
         ],
         "constraintFiles": [
