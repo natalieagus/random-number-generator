@@ -24,8 +24,9 @@ module alchitry_top (
              counter slow_clk(#SIZE(1), #DIV(CLOCK_DIVIDER))
              counter seg_clk(#SIZE(1), #DIV(SEG_REFRESH))
         }
+        edge_detector button_0_edge(#RISE(1), #FALL(0), .in(io_button_0.out))
         edge_detector seg_clk_edge(#RISE(1), #FALL(0), .in(seg_clk.value))
-        random_number_generator generator(.slow_clk(slow_clk.value), .refresh(io_button_0.out))
+        random_number_generator generator(.slow_clk(slow_clk.value), .refresh(button_0_edge.out))
     }
     
     decoder seg_selector(#WIDTH(2), .in(seg_multiplex.q))
